@@ -6,93 +6,118 @@
     <title>Undangan Aqiqah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Amiri:ital@0;1&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Poppins', sans-serif; overflow: hidden; /* Kunci scroll di awal */ }
-        .font-estetik { font-family: 'Great Vibes', cursive; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; /* Kunci scroll sebelum dibuka */
+            background-color: #faf8f5; /* Warna krem sangat muda/putih tulang */
+            color: #1a1a1a;
+        }
+        .font-arab { font-family: 'Amiri', serif; font-size: 6rem; line-height: 1; }
+        .font-sambung { font-family: 'Alex Brush', cursive; font-size: 4.5rem; line-height: 1; }
         
-        /* Animasi Slide Up Cover */
+        /* Pengaturan Cover Halaman Depan */
         #cover-page {
-            transition: transform 1s ease-in-out;
-            z-index: 40;
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background-size: cover;
+            background-position: center;
+            /* Transisi untuk Zoom dan Blur */
+            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1); 
         }
-        .slide-up {
-            transform: translateY(-100%);
+
+        /* Overlay tipis agar teks tetap terbaca meski foto agak terang/gelap */
+        .cover-overlay {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.8) 80%, rgba(255,255,255,1) 100%);
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 1rem;
         }
+
+        /* Kelas yang ditambahkan via JS saat tombol diklik */
+        .zoom-blur-out {
+            transform: scale(1.4); /* Efek Zoom In */
+            filter: blur(15px);    /* Efek Blur */
+            opacity: 0;            /* Menghilang */
+            pointer-events: none;
+        }
+
+        /* Styling huruf agar lebih elegan */
+        .letter-spacing-wide { letter-spacing: 0.15em; }
     </style>
 </head>
-<body class="bg-slate-50 text-gray-800 relative">
+<body class="antialiased">
 
-    <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
-        <p class="text-xl font-semibold animate-bounce text-blue-500">Mempersiapkan Undangan...</p>
+    <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-[60]">
+        <p class="text-sm tracking-widest uppercase animate-pulse">Menyiapkan Undangan...</p>
     </div>
 
-    <div id="cover-page" class="fixed inset-0 bg-blue-100 flex flex-col items-center justify-center text-center p-6 bg-cover bg-center" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');">
-        <h3 class="text-lg text-gray-600 mb-4" data-aos="fade-down">Tasyakuran Aqiqah</h3>
-        
-        <div class="w-48 h-48 rounded-full border-4 border-white shadow-xl overflow-hidden mb-6" data-aos="zoom-in" data-aos-delay="200">
-            <img id="cover-foto" src="https://via.placeholder.com/300" alt="Foto Anak" class="w-full h-full object-cover">
-        </div>
+    <div id="cover-page" style="background-image: url('https://via.placeholder.com/800x1200?text=Foto+Anak');">
+        <div class="cover-overlay text-center">
+            
+            <div class="mt-10" data-aos="fade-down" data-aos-duration="1500">
+                <div class="font-arab mb-[-20px]">عقيقة</div>
+                <div class="font-sambung text-gray-800">Invitation</div>
+            </div>
 
-        <h1 id="cover-nama" class="font-estetik text-5xl text-blue-800 mb-8" data-aos="fade-up" data-aos-delay="400">Nama Anak</h1>
-        
-        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-sm mb-8 w-full max-w-xs" data-aos="zoom-in" data-aos-delay="600">
-            <p class="text-sm text-gray-500">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-            <p id="nama-tamu" class="text-xl font-bold text-gray-900 mt-1">Tamu Undangan</p>
-        </div>
+            <div class="mb-10 w-full max-w-xs" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="500">
+                <p class="text-xs font-medium letter-spacing-wide mb-2 uppercase text-gray-600">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                <p id="nama-tamu" class="text-2xl font-semibold mb-8 border-b border-gray-400 inline-block pb-1 px-4">Tamu Kehormatan</p>
+                
+                <button onclick="bukaUndangan()" class="group flex flex-col items-center justify-center w-full focus:outline-none">
+                    <span class="bg-transparent border border-gray-800 text-gray-800 px-8 py-3 rounded-full text-sm uppercase tracking-widest group-hover:bg-gray-800 group-hover:text-white transition duration-500">
+                        Buka Undangan
+                    </span>
+                </button>
+            </div>
 
-        <button onclick="bukaUndangan()" class="bg-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 animate-pulse" data-aos="fade-up" data-aos-delay="800">
-            ✉ Buka Undangan
-        </button>
+        </div>
     </div>
 
-    <div id="main-content" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl pb-20">
-        <header class="text-center pt-20 pb-12 bg-gradient-to-b from-blue-100 to-white">
-            <h2 class="text-gray-500 mb-2">Bismillahirahmanirrahim</h2>
-            <h2 id="view-nama" class="font-estetik text-5xl text-blue-800 mt-4" data-aos="zoom-in">Nama Anak</h2>
+    <div id="main-content" class="max-w-md mx-auto min-h-screen pb-20 relative z-10 bg-[#faf8f5]">
+        
+        <header class="text-center pt-24 pb-12 px-6">
+            <p class="text-xs uppercase tracking-widest text-gray-500 mb-6" data-aos="fade-up">Inviting you to celebrate our</p>
+            <h2 id="view-nama" class="font-sambung text-6xl text-gray-900 mb-8" data-aos="zoom-in" data-aos-duration="1000">Baby Name</h2>
+            
+            <p class="text-sm text-gray-600 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+                Putra/Putri dari pasangan<br>
+                <span id="view-ortu" class="font-semibold text-gray-900 mt-2 block">Nama Orang Tua</span>
+            </p>
         </header>
 
-        <section class="px-8 py-6 text-center" data-aos="fade-up">
-            <p class="text-gray-600 mb-4 leading-relaxed">
-                Dengan memohon ridho dan rahmat Allah SWT, kami bermaksud menyelenggarakan syukuran Aqiqah putra/putri kami:
-            </p>
-            <p class="text-sm text-gray-500 mt-6">Putra/Putri dari pasangan:</p>
-            <p id="view-ortu" class="font-bold text-lg text-gray-800">Nama Orang Tua</p>
-        </section>
+        <div class="flex justify-center my-6" data-aos="fade-in">
+            <div class="w-16 h-[1px] bg-gray-400"></div>
+        </div>
 
-        <section class="m-6 p-8 bg-blue-50 rounded-2xl shadow-inner text-center" data-aos="flip-left">
-            <h3 class="font-bold text-blue-800 mb-6 text-xl">Waktu & Tempat Acara</h3>
+        <section class="px-8 py-6 text-center" data-aos="fade-up" data-aos-delay="300">
+            <p id="view-tanggal" class="text-sm font-medium uppercase tracking-widest mb-2 text-gray-800">DD MONTH YYYY</p>
+            <p id="view-waktu" class="text-xs uppercase tracking-widest text-gray-500 mb-8">00.00 WIT - Selesai</p>
             
-            <div class="mb-4">
-                <p class="text-sm text-gray-500 uppercase tracking-widest">Tanggal</p>
-                <p id="view-tanggal" class="font-bold text-lg">Tanggal Acara</p>
-            </div>
+            <p class="text-sm font-semibold uppercase tracking-widest text-gray-800 mb-2">Lokasi Acara</p>
+            <p id="view-alamat" class="text-xs text-gray-500 leading-relaxed mb-8 max-w-[250px] mx-auto">Alamat Lengkap Di Sini</p>
             
-            <div class="mb-6">
-                <p class="text-sm text-gray-500 uppercase tracking-widest">Pukul</p>
-                <p id="view-waktu" class="font-bold text-lg">Waktu Acara</p>
-            </div>
-            
-            <div class="mb-8">
-                <p class="text-sm text-gray-500 uppercase tracking-widest">Lokasi</p>
-                <p id="view-alamat" class="text-gray-700 font-medium">Alamat Lengkap</p>
-            </div>
-            
-            <a id="view-maps" href="#" target="_blank" class="inline-block w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-md">
-                📍 Buka Google Maps
+            <a id="view-maps" href="#" target="_blank" class="inline-block border border-gray-400 text-gray-600 px-6 py-2 text-xs uppercase tracking-widest hover:bg-gray-100 transition duration-300">
+                Lihat di Maps
             </a>
         </section>
 
-        <footer class="text-center px-8 py-10" data-aos="fade-up">
-            <p class="text-gray-600 italic">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
-            <p class="mt-4 font-bold text-blue-800">Wassalamu'alaikum Wr. Wb.</p>
+        <footer class="text-center pt-16 pb-8" data-aos="fade-in" data-aos-delay="500">
+            <p class="font-sambung text-3xl text-gray-400">Terima Kasih</p>
         </footer>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0TeL6XCTse6qVHSpAxtnhL1QNdCCyEBkbPchEMdRyTI6QeTYQa0UVCN-pu_vd3iFB9A/exec'; // MASUKKAN URL GAS ANDA
+        // ⚠️ GANTI DENGAN URL WEB APP GAS ANDA ⚠️
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0TeL6XCTse6qVHSpAxtnhL1QNdCCyEBkbPchEMdRyTI6QeTYQa0UVCN-pu_vd3iFB9A/exec';
 
         // 1. Ambil Nama Tamu dari URL Parameter (?to=Nama+Tamu)
         const urlParams = new URLSearchParams(window.location.search);
@@ -105,32 +130,43 @@
         fetch(GAS_URL)
             .then(response => response.json())
             .then(data => {
-                // Isi Cover
-                document.getElementById('cover-nama').innerText = data.nama_anak || 'Nama Anak';
-                if(data.foto_anak) document.getElementById('cover-foto').src = data.foto_anak;
+                // Set Background Cover
+                if(data.foto_anak) {
+                    document.getElementById('cover-page').style.backgroundImage = `url('${data.foto_anak}')`;
+                }
 
-                // Isi Konten Utama
-                document.getElementById('view-nama').innerText = data.nama_anak || 'Nama Anak';
+                // Set Konten Teks
+                document.getElementById('view-nama').innerText = data.nama_anak || 'Baby Name';
                 document.getElementById('view-ortu').innerText = data.nama_ortu || 'Nama Orang Tua';
-                document.getElementById('view-tanggal').innerText = data.tanggal_acara || 'Tanggal';
-                document.getElementById('view-waktu').innerText = data.waktu_acara || 'Waktu';
-                document.getElementById('view-alamat').innerText = data.alamat || 'Alamat';
+                document.getElementById('view-tanggal').innerText = data.tanggal_acara || 'Tanggal Acara';
+                document.getElementById('view-waktu').innerText = data.waktu_acara || 'Waktu Acara';
+                document.getElementById('view-alamat').innerText = data.alamat || 'Alamat Lengkap';
                 if(data.link_maps) document.getElementById('view-maps').href = data.link_maps;
 
-                // Selesai Loading
+                // Tutup Loading Screen
                 document.getElementById('loading').style.display = 'none';
                 AOS.init({ once: true }); 
             })
-            .catch(err => console.error('Error:', err));
+            .catch(err => {
+                console.error('Error fetching data:', err);
+                document.getElementById('loading').innerHTML = '<p class="text-red-500">Gagal memuat data.</p>';
+            });
 
-        // 3. Fungsi Animasi Buka Undangan
+        // 3. Fungsi Transisi Zoom & Blur
         function bukaUndangan() {
-            // Slide cover ke atas
-            document.getElementById('cover-page').classList.add('slide-up');
-            // Buka kunci scroll
+            const cover = document.getElementById('cover-page');
+            
+            // Tambahkan kelas CSS untuk memicu animasi zoom in dan blur
+            cover.classList.add('zoom-blur-out');
+            
+            // Izinkan user untuk scroll ke bawah
             document.body.style.overflow = 'auto';
-            // Refresh animasi agar elemen di bawah merender ulang
-            setTimeout(() => { AOS.refresh(); }, 1000);
+            
+            // Sembunyikan elemen cover sepenuhnya setelah animasi selesai (1.5 detik)
+            setTimeout(() => { 
+                cover.style.display = 'none'; 
+                AOS.refresh(); // Refresh animasi untuk halaman utama
+            }, 1500);
         }
     </script>
 </body>
