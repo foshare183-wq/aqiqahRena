@@ -142,7 +142,25 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0TeL6XCTse6qVHSpAxtnhL1QNdCCyEBkbPchEMdRyTI6QeTYQa0UVCN-pu_vd3iFB9A/exec';
+// FUNGSI UNTUK MERAPIKAN TANGGAL
+    function formatTanggalIndonesia(dateString) {
+        if (!dateString || dateString === "Tanggal") return "Tanggal Acara";
+        
+        try {
+            const date = new Date(dateString);
+            // Jika tanggal tidak valid, kembalikan teks asli
+            if (isNaN(date.getTime())) return dateString;
 
+            return new Intl.DateTimeFormat('id-ID', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }).format(date);
+        } catch (e) {
+            return dateString;
+        }
+    }
         // Load Data
         fetch(GAS_URL).then(r => r.json()).then(data => {
             if(data.foto_anak) document.getElementById('cover-page').style.backgroundImage = `url('${data.foto_anak}')`;
