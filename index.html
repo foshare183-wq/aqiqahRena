@@ -6,8 +6,7 @@
     <title>Undangan Aqiqah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Satisfy&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { 
             font-family: 'Montserrat', sans-serif; 
@@ -15,7 +14,7 @@
             color: #1a1a1a;
         }
         
-        .font-nama { font-family: 'Satisfy', cursive; } /* Karakteristik mirip Railey */
+        .font-nama { font-family: 'Arizonia', cursive; }
         .letter-spacing-widest { letter-spacing: 0.25em; }
         
         /* Animasi Transisi Cover */
@@ -59,7 +58,6 @@
 <body class="antialiased bg-animated">
 
     <audio id="bg-music" loop>
-        <source src="LINK_MP3_SYAHDU_PILIHAN_NIA" type="audio/mpeg">
     </audio>
     <button id="music-btn" onclick="toggleMusic()">🎵</button>
 
@@ -172,7 +170,14 @@
         document.getElementById('view-alamat').innerText = data.alamat || 'Alamat';
         
         if(data.link_maps) document.getElementById('view-maps').href = data.link_maps;
+        // Memasukkan sumber musik dari database
+        if(data.link_musik) {
+            document.getElementById('bg-music').src = data.link_musik;
+        }
         
+        // ... (kode di bawahnya biarkan sama)
+        document.getElementById('loading').style.display = 'none';
+        AOS.init({ once: true });
         document.getElementById('loading').style.display = 'none';
         AOS.init({ once: true });
     });
