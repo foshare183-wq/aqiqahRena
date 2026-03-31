@@ -8,13 +8,22 @@
 </head>
 <body class="bg-gray-100 p-6 font-sans">
     <div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-md">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">Pengaturan Undangan Aqiqah</h1>
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Pengaturan Undangan</h1>
         <form id="adminForm" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Link URL Foto Anak</label>
-                <input type="url" id="foto_anak" placeholder="Contoh: https://i.imgur.com/foto.jpg" class="mt-1 w-full border border-gray-300 rounded-md p-2">
-                <p class="text-xs text-gray-500 mt-1">*Gunakan link gambar langsung (.jpg/.png) dari Imgur atau Postimages.</p>
+            
+            <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <h2 class="text-sm font-bold text-blue-800 mb-3">Media (Foto & Musik)</h2>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700">Link URL Foto Anak</label>
+                    <input type="url" id="foto_anak" placeholder="https://..." class="mt-1 w-full border border-gray-300 rounded-md p-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Link Musik MP3</label>
+                    <input type="url" id="link_musik" placeholder="https://.../lagu.mp3" class="mt-1 w-full border border-gray-300 rounded-md p-2">
+                    <p class="text-[10px] text-gray-500 mt-1">*Gunakan direct link .mp3 dari GitHub atau Google Drive.</p>
+                </div>
             </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700">Nama Anak</label>
                 <input type="text" id="nama_anak" class="mt-1 w-full border border-gray-300 rounded-md p-2" required>
@@ -25,31 +34,34 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Tanggal Acara</label>
-                <input type="text" id="tanggal_acara" class="mt-1 w-full border border-gray-300 rounded-md p-2">
+                <input type="date" id="tanggal_acara" class="mt-1 w-full border border-gray-300 rounded-md p-2">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Waktu Acara</label>
-                <input type="text" id="waktu_acara" class="mt-1 w-full border border-gray-300 rounded-md p-2">
+                <input type="text" id="waktu_acara" placeholder="Contoh: 10:00 WIT - Selesai" class="mt-1 w-full border border-gray-300 rounded-md p-2">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
-                <textarea id="alamat" rows="3" class="mt-1 w-full border border-gray-300 rounded-md p-2"></textarea>
+                <textarea id="alamat" rows="2" class="mt-1 w-full border border-gray-300 rounded-md p-2"></textarea>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Link Google Maps</label>
                 <input type="url" id="link_maps" class="mt-1 w-full border border-gray-300 rounded-md p-2">
             </div>
-            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">Simpan Perubahan</button>
+            
+            <button type="submit" id="btnSubmit" class="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-md hover:bg-black transition">Simpan Pengaturan</button>
             <p id="status" class="text-center text-sm font-semibold mt-2 hidden"></p>
         </form>
     </div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0TeL6XCTse6qVHSpAxtnhL1QNdCCyEBkbPchEMdRyTI6QeTYQa0UVCN-pu_vd3iFB9A/exec'; // MASUKKAN URL GAS ANDA
+        // ⚠️ GANTI DENGAN URL WEB APP GAS ⚠️
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbx0TeL6XCTse6qVHSpAxtnhL1QNdCCyEBkbPchEMdRyTI6QeTYQa0UVCN-pu_vd3iFB9A/exec'; 
 
         window.onload = function() {
             fetch(GAS_URL).then(r => r.json()).then(data => {
                 document.getElementById('foto_anak').value = data.foto_anak || '';
+                document.getElementById('link_musik').value = data.link_musik || '';
                 document.getElementById('nama_anak').value = data.nama_anak || '';
                 document.getElementById('nama_ortu').value = data.nama_ortu || '';
                 document.getElementById('tanggal_acara').value = data.tanggal_acara || '';
@@ -67,6 +79,7 @@
 
             const payload = {
                 foto_anak: document.getElementById('foto_anak').value,
+                link_musik: document.getElementById('link_musik').value,
                 nama_anak: document.getElementById('nama_anak').value,
                 nama_ortu: document.getElementById('nama_ortu').value,
                 tanggal_acara: document.getElementById('tanggal_acara').value,
@@ -83,7 +96,7 @@
                 status.innerText = 'Tersimpan!';
                 status.className = 'text-center text-sm font-semibold mt-2 text-green-600 block';
             }).finally(() => {
-                btn.innerText = 'Simpan Perubahan'; btn.disabled = false;
+                btn.innerText = 'Simpan Pengaturan'; btn.disabled = false;
                 setTimeout(() => status.classList.add('hidden'), 3000);
             });
         });
