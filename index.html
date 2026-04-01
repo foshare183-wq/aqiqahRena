@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Aqiqah</title>
+    <meta property="og:title" content="Tasyakuran Aqiqah Rena">
+    <meta property="og:description" content="Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu.">
+    <meta property="og:image" content="https://via.placeholder.com/600x600.jpg?text=Foto+Preview">
+    <meta property="og:url" content="https://foshare183-wq.github.io/aqiqahRena/">
+    <meta property="og:type" content="website">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Arizonia&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -163,7 +168,10 @@
             const wishes = res.wishes;
 
             if(data.foto_anak) document.getElementById('cover-page').style.backgroundImage = `url('${data.foto_anak}')`;
-            if(data.link_musik) document.getElementById('bg-music').src = data.link_musik;
+            if(data.link_musik) {
+    document.getElementById('bg-music').src = data.link_musik;
+    document.getElementById('bg-music').load(); // Sentilan agar audio siap diputar
+}
             
             document.getElementById('view-nama').innerText = data.nama_anak || 'Nama Anak';
             document.getElementById('view-ortu').innerText = data.nama_ortu || 'Nama Orang Tua';
@@ -193,14 +201,18 @@
             document.getElementById('loading').innerHTML = '<p class="text-xs text-red-500">Gagal memuat data.</p>';
         });
 
-        // Handler Kirim Ucapan
+        // Handler Kirim Ucapan (Tanpa Reload Halaman)
         document.getElementById('wishForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnWish');
-            const nama = document.getElementById('wish-nama').value;
-            const ucapan = document.getElementById('wish-pesan').value;
+            const namaInput = document.getElementById('wish-nama');
+            const ucapanInput = document.getElementById('wish-pesan');
+            
+            const nama = namaInput.value;
+            const ucapan = ucapanInput.value;
 
-            btn.innerText = 'MENGIRIM...'; btn.disabled = true;
+            btn.innerText = 'MENGIRIM...'; 
+            btn.disabled = true;
 
             const payload = { action: 'send_wish', nama: nama, ucapan: ucapan };
 
@@ -209,9 +221,37 @@
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             }).then(() => {
-                // Bersihkan form & muat ulang untuk menampilkan ucapan baru
+                // 1. Bersihkan form isian
                 document.getElementById('wishForm').reset();
-                location.reload(); 
+                
+                // 2. Ubah teks tombol jadi sukses sementara waktu
+                btn.innerText = 'BERHASIL DIKIRIM!';
+                btn.classList.add('bg-green-600'); // Berubah warna hijau sebentar
+                
+                setTimeout(() => { 
+                    btn.innerText = 'KIRIM UCAPAN'; 
+                    btn.classList.remove('bg-green-600');
+                    btn.disabled = false; 
+                }, 3000);
+
+                // 3. Tambahkan ucapan baru ke daftar secara instan (tanpa reload)
+                const container = document.getElementById('wishes-container');
+                
+                // Jika sebelumnya kosong, hapus teks "Belum ada ucapan"
+                if (container.innerHTML.includes('Belum ada ucapan')) {
+                    container.innerHTML = '';
+                }
+
+                // Buat elemen kotak ucapan baru
+                const newWish = `
+                    <div class="p-3 bg-white/70 rounded-xl border border-green-200 shadow-sm transition-all duration-500">
+                        <p class="font-bold text-[10px] text-gray-800 mb-1 tracking-wider">${nama} <span class="text-green-500 font-normal italic">(Baru)</span></p>
+                        <p class="text-[10px] text-gray-600 leading-relaxed">"${ucapan}"</p>
+                    </div>`;
+                
+                // Masukkan ucapan baru ke urutan paling atas (afterbegin)
+                container.insertAdjacentHTML('afterbegin', newWish);
+
             }).catch(err => {
                 btn.innerText = 'GAGAL, COBA LAGI';
                 setTimeout(() => { btn.innerText = 'KIRIM UCAPAN'; btn.disabled = false; }, 3000);
